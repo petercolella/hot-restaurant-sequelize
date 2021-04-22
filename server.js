@@ -1,7 +1,9 @@
 // DEPENDENCIES
 // Series of npm packages that we will use to give our server useful functionality
 
-const express = require('express');
+const express = require("express");
+const routes = require("./routes");
+const sequelize = require("./config/connection");
 
 // EXPRESS CONFIGURATION
 // This sets up the basic properties for our express server
@@ -20,12 +22,9 @@ app.use(express.json());
 // The below points our server to a series of "route" files.
 // These routes give our server a "map" of how to respond when users visit or request data from various URLs.
 
-require('./routes/apiRoutes')(app);
-require('./routes/htmlRoutes')(app);
+app.use(routes);
 
-// LISTENER
-// The below code effectively "starts" our server
-
-app.listen(PORT, () => {
-  console.log(`App listening on PORT: ${PORT}`);
+// turn on connection to db and server
+sequelize.sync({ force: true }).then(() => {
+  app.listen(PORT, () => console.log(`App listening on PORT: ${PORT}`));
 });
