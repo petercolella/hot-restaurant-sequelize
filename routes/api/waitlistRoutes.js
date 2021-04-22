@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const db = require("../../models");
+const { Waitlist } = require("../../models");
 
 // ROUTING
 
@@ -11,7 +11,10 @@ const db = require("../../models");
 
 router.get("/", (req, res) => {
   console.log("/api/waitlist");
-  res.json("you hit the waitlist route");
+
+  Waitlist.findAll()
+    .then((waitlistData) => res.status(200).json(waitlistData))
+    .catch((err) => res.status(500).json(err));
 });
 
 module.exports = router;

@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const db = require("../../models");
+const { Table, Waitlist } = require("../../models");
 
 // ROUTING
 
@@ -10,8 +10,11 @@ const db = require("../../models");
 // ---------------------------------------------------------------------------
 
 router.get("/", (req, res) => {
-  console.log("/api/tables");
-  res.json("you hit the tables get route");
+  console.log("GET /api/tables");
+
+  Table.findAll()
+    .then((tableData) => res.status(200).json(tableData))
+    .catch((err) => res.status(500).json(err));
 });
 
 // API POST Requests
@@ -26,8 +29,21 @@ router.post("/", (req, res) => {
   // Note the code here. Our "server" will respond to requests and let users know if they have a table or not.
   // It will do this by sending out the value "true" have a table
   // req.body is available since we're using the body parsing middleware
-  console.log("/api/tables", req.body);
-  res.json("you hit the tables post route");
+  console.log("POST /api/tables", req.body);
+
+  Table.findAll()
+    .then((tableData) => {
+      if (tableData.length < 5) {
+        Table.create(req.body)
+          .then(() => res.status(200).json(true))
+          .catch((err) => res.status(500).json(err));
+      } else {
+        Waitlist.create(req.body)
+          .then(() => res.status(200).json(false))
+          .catch((err) => res.status(500).json(err));
+      }
+    })
+    .catch((err) => res.status(500).json(err));
 });
 
 module.exports = router;
