@@ -11,6 +11,10 @@ Table.init(
       primaryKey: true,
       autoIncrement: true,
     },
+    customerID: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     customerName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -31,7 +35,6 @@ Table.init(
     sequelize,
     timestamps: false,
     freezeTableName: true,
-    underscored: true,
     modelName: "table",
   }
 );
